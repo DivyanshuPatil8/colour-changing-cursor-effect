@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color-Changing Cursor Effect</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #111;
+      font-family: Arial, sans-serif;
+    }
+    
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      /* pointer-events: none; */
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+      transition: transform 0.1s ease;
+    }
+    
+    .instructions {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      color: white;
+      text-align: center;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor"></div>
+  <div class="instructions">Move your mouse around to see the colour-changing cursor effect!</div>
+  
+  <script>
+    const cursor = document.querySelector('.cursor');
+    let hue = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      // Update cursor position
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      
+      // Change color based on position
+      hue = (hue + 1) % 360;
+      cursor.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+      
+      // Add size animation based on mouse speed
+      const speed = Math.sqrt(e.movementX**2 + e.movementY**2);
+      const size = Math.min(20 + speed, 50);
+      cursor.style.width = size + 'px';
+      cursor.style.height = size + 'px';
+      
+      // Add trail effect
+      const trail = document.createElement('div');
+      trail.className = 'cursor';
+      trail.style.left = e.clientX + 'px';
+      trail.style.top = e.clientY + 'px';
+      trail.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+      trail.style.width = size * 0.5 + 'px';
+      trail.style.height = size * 0.5 + 'px';
+      trail.style.opacity = '0.5';
+      document.body.appendChild(trail);
+      
+      // Remove trail after animation
+      setTimeout(() => {
+        trail.style.opacity = '0';
+        setTimeout(() => {
+          document.body.removeChild(trail);
+        }, 300);
+      }, 100);
+    });
+  </script>
+</body>
+</html>
